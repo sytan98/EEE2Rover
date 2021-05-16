@@ -8,6 +8,9 @@
 
 #include "auto_focus.h"
 
+#include <fcntl.h>
+#include <unistd.h>
+
 //EEE_IMGPROC defines
 #define EEE_IMGPROC_MSG_START ('R'<<16 | 'B'<<8 | 'B')
 
@@ -17,8 +20,11 @@
 #define EEE_IMGPROC_ID 2
 #define EEE_IMGPROC_BBCOL 3
 
-
-#define DEFAULT_LEVEL 2
+#define EXPOSURE_INIT 0x002000
+#define EXPOSURE_STEP 0x100
+#define GAIN_INIT 0x080
+#define GAIN_STEP 0x040
+#define DEFAULT_LEVEL 3
 
 #define MIPI_REG_PHYClkCtl		0x0056
 #define MIPI_REG_PHYData0Ctl	0x0058
@@ -115,8 +121,8 @@ bool MIPI_Init(void){
 
 int main()
 {
-	int boundingBoxColour = 0;
 
+	fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
 
   printf("DE10-LITE D8M VGA Demo\n");
   printf("Imperial College EEE2 Project version\n");
@@ -179,6 +185,12 @@ int main()
         alt_u16 bin_level = DEFAULT_LEVEL;
         alt_u8  manual_focus_step = 10;
         alt_u16  current_focus = 300;
+    	int boundingBoxColour = 0;
+    	alt_u32 exposureTime = EXPOSURE_INIT;
+    	alt_u16 gain = GAIN_INIT;
+
+        OV8865SetExposure(exposureTime);
+        OV8865SetGain(gain);
         Focus_Init();
   while(1){
 
@@ -241,9 +253,33 @@ int main()
        }
 
        //Update the bounding box colour
-       boundingBoxColour = (++boundingBoxColour & 0xff);
+       boundingBoxColour = ((boundingBoxColour + 1) & 0xff);
        IOWR(0x42000, EEE_IMGPROC_BBCOL, (boundingBoxColour << 8) | (0xff - boundingBoxColour));
 
+       //Process input commands
+       int in = getchar();
+       switch (in) {
+       	   case 'e': {
+       		   exposureTime += EXPOSURE_STEP;
+       		   OV8865SetExposure(exposureTime);
+       		   printf("\nExposure = %x ", exposureTime);
+       	   	   break;}
+       	   case 'd': {
+       		   exposureTime -= EXPOSURE_STEP;
+       		   OV8865SetExposure(exposureTime);
+       		   printf("\nExposure = %x ", exposureTime);
+       	   	   break;}
+       	   case 't': {
+       		   gain += GAIN_STEP;
+       		   OV8865SetGain(gain);
+       		   printf("\nGain = %x ", gain);
+       	   	   break;}
+       	   case 'g': {
+       		   gain -= GAIN_STEP;
+       		   OV8865SetGain(gain);
+       		   printf("\nGain = %x ", gain);
+       	   	   break;}
+       }
 
 
 	   //Main loop delay
