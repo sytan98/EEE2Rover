@@ -456,7 +456,7 @@ void OV8865_FOCUS_Move_to(alt_u16 a_u2MovePosition)
 	if (!bSuccess)
 		printf("failed to init MIPI- Camera i2c\r\n");
 
-	printf("Manual set focus to %d\r\n",a_u2MovePosition);
+	//printf("Manual set focus to %d\r\n",a_u2MovePosition);
   alt_u8 msb,lsb;
   msb = (a_u2MovePosition >> 4)&0x00FF;
   lsb = (a_u2MovePosition << 4 )&0x00F0;

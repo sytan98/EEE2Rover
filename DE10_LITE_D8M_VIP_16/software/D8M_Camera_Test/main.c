@@ -279,6 +279,17 @@ int main()
        		   OV8865SetGain(gain);
        		   printf("\nGain = %x ", gain);
        	   	   break;}
+       	   case 'r': {
+        	   current_focus += manual_focus_step;
+        	   if(current_focus >1023) current_focus = 1023;
+        	   OV8865_FOCUS_Move_to(current_focus);
+        	   printf("\nFocus = %x ",current_focus);
+       	   	   break;}
+       	   case 'f': {
+        	   if(current_focus > manual_focus_step) current_focus -= manual_focus_step;
+        	   OV8865_FOCUS_Move_to(current_focus);
+        	   printf("\nFocus = %x ",current_focus);
+       	   	   break;}
        }
 
 
