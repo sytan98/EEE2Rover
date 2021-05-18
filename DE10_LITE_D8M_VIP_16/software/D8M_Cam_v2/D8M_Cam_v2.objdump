@@ -77,7 +77,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  29 .jdi          0000414a  00000000  00000000  0007b3a5  2**0
                   CONTENTS, READONLY
- 30 .sopcinfo     00099607  00000000  00000000  0007f4ef  2**0
+ 30 .sopcinfo     0009f367  00000000  00000000  0007f4ef  2**0
                   CONTENTS, READONLY
 SYMBOL TABLE:
 00020000 l    d  .entry	00000000 .entry
@@ -3296,7 +3296,7 @@ int main()
    21858:	00880004 	movi	r2,8192
    2185c:	e0bffa15 	stw	r2,-24(fp)
     alt_u16 gain = GAIN_INIT;
-   21860:	00802004 	movi	r2,128
+   21860:	00804004 	movi	r2,256
    21864:	e0bffb0d 	sth	r2,-20(fp)
 
     OV8865SetExposure(exposureTime);

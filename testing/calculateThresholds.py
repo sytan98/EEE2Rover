@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img = cv2.imread('tuning_grey_3.jpg')
+img = cv2.imread('img4.jpg')
 img = cv2.resize(img, (640, 480)) 
 img = cv2.GaussianBlur(img, (5, 5), 0)
 # img = cv2.medianBlur(img,5)
@@ -17,16 +17,16 @@ upper_green = np.array([65,255,255])
 
 
 # define range of blue color in HSV
-lower_blue = np.array([80,60,60])
-upper_blue = np.array([100,255,255])
+lower_blue = np.array([80,50,75])
+upper_blue = np.array([110,255,255])
 
 # define range of yellow color in hsv
 lower_yellow = np.array([10,100,80])
 upper_yellow = np.array([30,255,255])
 
 # define range of grey color in hsv
-lower_grey = np.array([20,10,20])
-upper_grey = np.array([50,150,50])
+lower_grey = np.array([0,10,20])
+upper_grey = np.array([30,150,50])
 
 # Threshold the HSV image to get only blue colors
 green_mask = cv2.inRange(hsv, lower_green, upper_green)
@@ -34,9 +34,9 @@ red_mask =  cv2.inRange(hsv, lower_red, upper_red)
 blue_mask =  cv2.inRange(hsv, lower_blue, upper_blue)
 yellow_mask =  cv2.inRange(hsv, lower_yellow, upper_yellow)
 grey_mask =  cv2.inRange(hsv, lower_grey, upper_grey)
-# mask = grey_mask
+mask = grey_mask
 
-mask = green_mask + red_mask + blue_mask+ yellow_mask + grey_mask
+# mask = green_mask + red_mask + blue_mask+ yellow_mask + grey_mask
 # # Bitwise-AND mask and original image
 res = cv2.bitwise_and(img, img, mask= mask)
 

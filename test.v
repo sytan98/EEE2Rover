@@ -127,12 +127,13 @@ assign g_bb_active = (x == g_left) | (x == g_right) | (y == g_top) | (y == g_bot
 assign b_bb_active = (x == b_left) | (x == b_right) | (y == b_top) | (y == b_bottom);
 assign gr_bb_active = (x == gr_left) | (x == gr_right) | (y == gr_top) | (y == gr_bottom);
 assign y_bb_active = (x == y_left) | (x == y_right) | (y == y_top) | (y == y_bottom);
-assign new_image = r_bb_active? {8'hff, 8'h0, 8'h0} : 
-						g_bb_active ? {8'h0, 8'h0, 8'h80} :
-						b_bb_active ? {8'h0, 8'hff, 8'h0} :
-						gr_bb_active ? {8'h0, 8'h0, 8'hff} :
-						y_bb_active ? {8'hff, 8'hff, 8'h0} :
-						obstacle_high;
+assign new_image = r_bb_active ? bb_col : obstacle_high;
+assign obstacle_high  = r_bb_active? {8'hff, 8'h0, 8'h0} : 
+                        g_bb_active ? {8'h0, 8'h0, 8'h80} :
+                        b_bb_active ? {8'h0, 8'hff, 8'h0} :
+                        gr_bb_active ? {8'h0, 8'h0, 8'hff} :
+                        y_bb_active ? {8'hff, 8'hff, 8'h0} :
+                        obstacle_high;
 
 // Switch output pixels depending on mode switch
 // Don't modify the start-of-packet word - it's a packet discriptor
@@ -166,7 +167,7 @@ reg [10:0] b_x_min, b_y_min, b_x_max, b_y_max;
 reg [10:0] gr_x_min, gr_y_min, gr_x_max, gr_y_max;
 reg [10:0] y_x_min, y_y_min, y_x_max, y_y_max;
 always@(posedge clk) begin
-	if (in_valid) begin
+    if (in_valid) begin
 
         if (red_detect & in_valid) begin	//Update bounds when the pixel is red
             if (x < r_x_min) r_x_min <= x;
@@ -205,7 +206,6 @@ always@(posedge clk) begin
             r_y_max <= 0;b_y_max <= 0;g_y_max <= 0;gr_y_max <= 0;y_y_max <= 0;
             
         end
-	end
 end
 
 //Process bounding box at the end of the frame.
@@ -216,7 +216,6 @@ reg [10:0] b_left, b_right, b_top, b_bottom;
 reg [10:0] gr_left, gr_right, gr_top, gr_bottom;
 reg [10:0] y_left, y_right, y_top, y_bottom;
 reg [7:0] frame_count;
-
 always@(posedge clk) begin
 	if (eop & in_valid & packet_video) begin  //Ignore non-video packets
 		
@@ -226,22 +225,22 @@ always@(posedge clk) begin
 		r_top <= r_y_min;
 		r_bottom <= r_y_max;
   
-	   g_left <= g_x_min;
+        g_left <= g_x_min;
 		g_right <= g_x_max;
 		g_top <= g_y_min;
 		g_bottom <= g_y_max;	
         
-      b_left <= b_x_min;
+        b_left <= b_x_min;
 		b_right <= b_x_max;
 		b_top <= b_y_min;
 		b_bottom <= b_y_max;	
         
-      gr_left <= gr_x_min;
+        gr_left <= gr_x_min;
 		gr_right <= gr_x_max;
 		gr_top <= gr_y_min;
 		gr_bottom <= gr_y_max;	
        
-      y_left <= y_x_min;
+        y_left <= y_x_min;
 		y_right <= y_x_max;
 		y_top <= y_y_min;
 		y_bottom <= y_y_max;	
@@ -281,11 +280,11 @@ always@(*) begin	//Write words to FIFO as state machine advances
 			msg_buf_wr = 1'b1;
 		end
 		2'b10: begin
-			msg_buf_in = {5'b0, r_x_min, 5'b0, r_y_min};	//Top left coordinate
+			msg_buf_in = {5'b0, x_min, 5'b0, y_min};	//Top left coordinate
 			msg_buf_wr = 1'b1;
 		end
 		2'b11: begin
-			msg_buf_in = {5'b0, r_x_max, 5'b0, r_y_max}; //Bottom right coordinate
+			msg_buf_in = {5'b0, x_max, 5'b0, y_max}; //Bottom right coordinate
 			msg_buf_wr = 1'b1;
 		end
 	endcase
