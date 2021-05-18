@@ -124,29 +124,29 @@ int main()
 
 	fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
 
-  printf("DE10-LITE D8M VGA Demo\n");
-  printf("Imperial College EEE2 Project version\n");
-  IOWR(MIPI_PWDN_N_BASE, 0x00, 0x00);
-  IOWR(MIPI_RESET_N_BASE, 0x00, 0x00);
+    printf("DE10-LITE D8M VGA Demo\n");
+    printf("Imperial College EEE2 Project version\n");
+    IOWR(MIPI_PWDN_N_BASE, 0x00, 0x00);
+    IOWR(MIPI_RESET_N_BASE, 0x00, 0x00);
 
-  usleep(2000);
-  IOWR(MIPI_PWDN_N_BASE, 0x00, 0xFF);
-  usleep(2000);
-  IOWR(MIPI_RESET_N_BASE, 0x00, 0xFF);
+    usleep(2000);
+    IOWR(MIPI_PWDN_N_BASE, 0x00, 0xFF);
+    usleep(2000);
+    IOWR(MIPI_RESET_N_BASE, 0x00, 0xFF);
 
-  printf("Image Processor ID: %x\n",IORD(0x42000,EEE_IMGPROC_ID));
-  //printf("Image Processor ID: %x\n",IORD(EEE_IMGPROC_0_BASE,EEE_IMGPROC_ID)); //Don't know why this doesn't work - definition is in system.h in BSP
-
-
-  usleep(2000);
+    printf("Image Processor ID: %x\n",IORD(0x42000,EEE_IMGPROC_ID));
+    //printf("Image Processor ID: %x\n",IORD(EEE_IMGPROC_0_BASE,EEE_IMGPROC_ID)); //Don't know why this doesn't work - definition is in system.h in BSP
 
 
-  // MIPI Init
-   if (!MIPI_Init()){
-	  printf("MIPI_Init Init failed!\r\n");
-  }else{
-	  printf("MIPI_Init Init successfully!\r\n");
-  }
+    usleep(2000);
+
+
+    // MIPI Init
+    if (!MIPI_Init()){
+        printf("MIPI_Init Init failed!\r\n");
+    }else{
+	    printf("MIPI_Init Init successfully!\r\n");
+    }
 
 //   while(1){
  	    mipi_clear_error();
@@ -159,55 +159,51 @@ int main()
 //   }
 
 
-#if 0  // focus sweep
-	    printf("\nFocus sweep\n");
- 	 	alt_u16 ii= 350;
- 	    alt_u8  dir = 0;
- 	 	while(1){
- 	 		if(ii< 50) dir = 1;
- 	 		else if (ii> 1000) dir =0;
+    #if 0  // focus sweep
+            printf("\nFocus sweep\n");
+            alt_u16 ii= 350;
+            alt_u8  dir = 0;
+            while(1){
+                if(ii< 50) dir = 1;
+                else if (ii> 1000) dir =0;
 
- 	 		if(dir) ii += 20;
- 	 		else    ii -= 20;
+                if(dir) ii += 20;
+                else    ii -= 20;
 
- 	    	printf("%d\n",ii);
- 	     OV8865_FOCUS_Move_to(ii);
- 	     usleep(50*1000);
- 	    }
-#endif
-
-
-
-
+                printf("%d\n",ii);
+            OV8865_FOCUS_Move_to(ii);
+            usleep(50*1000);
+            }
+    #endif
 
 
     //////////////////////////////////////////////////////////
-        alt_u16 bin_level = DEFAULT_LEVEL;
-        alt_u8  manual_focus_step = 10;
-        alt_u16  current_focus = 300;
-    	int boundingBoxColour = 0;
-    	alt_u32 exposureTime = EXPOSURE_INIT;
-    	alt_u16 gain = GAIN_INIT;
+    alt_u16 bin_level = DEFAULT_LEVEL;
+    alt_u8  manual_focus_step = 10;
+    alt_u16  current_focus = 300;
+    int boundingBoxColour = 0;
+    alt_u32 exposureTime = EXPOSURE_INIT;
+    alt_u16 gain = GAIN_INIT;
 
-        OV8865SetExposure(exposureTime);
-        OV8865SetGain(gain);
-        Focus_Init();
-  while(1){
-
-       // touch KEY0 to trigger Auto focus
-	   if((IORD(KEY_BASE,0)&0x03) == 0x02){
-
-    	   current_focus = Focus_Window(320,240);
-       }
-	   // touch KEY1 to ZOOM
-	         if((IORD(KEY_BASE,0)&0x03) == 0x01){
-	      	   if(bin_level == 3 )bin_level = 1;
-	      	   else bin_level ++;
-	      	   printf("set bin level to %d\n",bin_level);
-	      	   MIPI_BIN_LEVEL(bin_level);
-	      	 	usleep(500000);
-
-	         }
+    OV8865SetExposure(exposureTime);
+    OV8865SetGain(gain);
+    Focus_Init();
+    while(1){
+    	printf("In While Loop\n");
+        // touch KEY0 to trigger Auto focus
+        if((IORD(KEY_BASE,0)&0x03) == 0x02){
+        	printf("Doing auto focus\n");
+            current_focus = Focus_Window(320,240);
+        }
+        // touch KEY1 to ZOOM
+		if((IORD(KEY_BASE,0)&0x03) == 0x01){
+			printf("Zooming\n");
+			if(bin_level == 3 )bin_level = 1;
+			else bin_level ++;
+				printf("set bin level to %d\n",bin_level);
+				MIPI_BIN_LEVEL(bin_level);
+				usleep(500000);
+		}
 
 
 	#if 0
@@ -291,6 +287,7 @@ int main()
         	   printf("\nFocus = %x ",current_focus);
        	   	   break;}
        }
+       printf("After Getting Char\n");
 
 
 	   //Main loop delay
