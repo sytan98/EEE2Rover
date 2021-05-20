@@ -583,7 +583,7 @@ Disassembly of section .entry:
    20014:	08409114 	ori	at,at,580
     jmp r1
    20018:	0800683a 	jmp	at
-   2001c:	00000000 	call	0 <__reset-0x20000>
+   2001c:	00000000 	call	0 <__alt_mem_onchip_memory2_0-0x20000>
 
 Disassembly of section .exceptions:
 
@@ -6310,18 +6310,18 @@ void QUEUE_Empty(QUEUE_STRUCT *pQueue){
    23e00:	000248f4 	movhi	zero,2339
    23e04:	000248f4 	movhi	zero,2339
    23e08:	000248a0 	cmpeqi	zero,zero,2338
-   23e0c:	00024840 	call	2484 <__reset-0x1db7c>
+   23e0c:	00024840 	call	2484 <__alt_mem_onchip_memory2_0-0x1db7c>
    23e10:	0002410c 	andi	zero,zero,2308
    23e14:	0002410c 	andi	zero,zero,2308
    23e18:	0002410c 	andi	zero,zero,2308
    23e1c:	00024850 	cmplti	zero,zero,2337
-   23e20:	00024840 	call	2484 <__reset-0x1db7c>
+   23e20:	00024840 	call	2484 <__alt_mem_onchip_memory2_0-0x1db7c>
    23e24:	000248f4 	movhi	zero,2339
    23e28:	000248f4 	movhi	zero,2339
    23e2c:	0002485c 	xori	zero,zero,2337
    23e30:	000248f4 	movhi	zero,2339
    23e34:	0002486c 	andhi	zero,zero,2337
-   23e38:	00024740 	call	2474 <__reset-0x1db8c>
+   23e38:	00024740 	call	2474 <__alt_mem_onchip_memory2_0-0x1db8c>
    23e3c:	00023e7c 	xorhi	zero,zero,2297
    23e40:	00024760 	cmpeqi	zero,zero,2333
    23e44:	000248f4 	movhi	zero,2339
@@ -13547,7 +13547,7 @@ void QUEUE_Empty(QUEUE_STRUCT *pQueue){
    2accc:	1285883a 	add	r2,r2,r10
    2acd0:	10800017 	ldw	r2,0(r2)
    2acd4:	1000683a 	jmp	r2
-   2acd8:	0002b3c0 	call	2b3c <__reset-0x1d4c4>
+   2acd8:	0002b3c0 	call	2b3c <__alt_mem_onchip_memory2_0-0x1d4c4>
    2acdc:	0002b68c 	andi	zero,zero,2778
    2ace0:	0002b68c 	andi	zero,zero,2778
    2ace4:	0002b3e0 	cmpeqi	zero,zero,2767
@@ -17471,10 +17471,10 @@ void QUEUE_Empty(QUEUE_STRUCT *pQueue){
    2e93c:	0002e98c 	andi	zero,zero,2982
    2e940:	0002eb58 	cmpnei	zero,zero,2989
    2e944:	0002eb58 	cmpnei	zero,zero,2989
-   2e948:	0002eb40 	call	2eb4 <__reset-0x1d14c>
+   2e948:	0002eb40 	call	2eb4 <__alt_mem_onchip_memory2_0-0x1d14c>
    2e94c:	0002e98c 	andi	zero,zero,2982
    2e950:	0002eb58 	cmpnei	zero,zero,2989
-   2e954:	0002eb40 	call	2eb4 <__reset-0x1d14c>
+   2e954:	0002eb40 	call	2eb4 <__alt_mem_onchip_memory2_0-0x1d14c>
    2e958:	0002eb58 	cmpnei	zero,zero,2989
    2e95c:	0002e98c 	andi	zero,zero,2982
    2e960:	0002eb68 	cmpgeui	zero,zero,2989
