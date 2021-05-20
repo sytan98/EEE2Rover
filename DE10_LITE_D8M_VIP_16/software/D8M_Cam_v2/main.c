@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include "I2C_core.h"
 #include "terasic_includes.h"
@@ -22,7 +20,7 @@
 
 #define EXPOSURE_INIT 0x002000
 #define EXPOSURE_STEP 0x100
-#define GAIN_INIT 0x100
+#define GAIN_INIT 0x780
 #define GAIN_STEP 0x080
 #define DEFAULT_LEVEL 3
 
@@ -178,6 +176,7 @@ int main()
 
 
     //////////////////////////////////////////////////////////
+    alt_u16 bb [5][4];
     alt_u16 bin_level = DEFAULT_LEVEL;
     alt_u8  manual_focus_step = 10;
     alt_u16  current_focus = 300;
@@ -238,7 +237,10 @@ int main()
 
        }
 	#endif
-       int idx = 0;
+       alt_u8 idx = 0;
+       alt_u8 color = 0;
+       alt_u16 x, y;
+       alt_u32 area;
        //Read messages from the image processor and print them on the terminal
        while ((IORD(0x42000,EEE_IMGPROC_STATUS)>>8) & 0xff) { 	//Find out if there are words to read
            int word = IORD(0x42000,EEE_IMGPROC_MSG); 			//Get next word from message buffer
@@ -247,19 +249,44 @@ int main()
     	   }
     	   if (idx == 0){
     		   printf("RBB MSG ID: ");
-			   printf("%08x ",word);
+			   printf("%08x\n ",word);
     	   } else {
-    		   if (idx == 1)printf("xmin: ");
-			   if (idx == 2)printf("xmax: ");
-			   printf("%d ",(word & 0xffff0000)>> 16);
-			   if (idx == 1)printf("ymin: ");
-			   if (idx == 2)printf("ymax: ");
-			   printf("%d ",(word & 0x0000ffff));
+    		   x =(word & 0xffff0000)>> 16;
+    		   y = (word & 0x0000ffff);
+    		   if (idx == 1){
+    			   bb[color][0] = x;
+    			   bb[color][1] = y;
+    		   } else if (idx == 2){
+    			   bb[color][2] =x;
+    			   bb[color][3] = y;
+    			   idx = 0;
+    			   color += 1;
+    		   }
     	   }
-
     	   idx += 1;
        }
+//       while ((IORD(0x42000,EEE_IMGPROC_STATUS)>>8) & 0xff) { 	//Find out if there are words to read
+//           int word = IORD(0x42000,EEE_IMGPROC_MSG); 			//Get next word from message buffer
+//    	   if (word == EEE_IMGPROC_MSG_START){ 					//Newline on message identifier
+//    		   printf("\n");
+//    		   printf("RBB MSG ID: ");
+//			   printf("%08x ",word);
+//    	   } else {
 
+//    		   printf("%d\n",x);
+//    		   printf("%d\n",y);
+
+//    	   }
+//       }
+       for (alt_u8 i = 0; i < 5; i++){
+    	   printf("Color %d: ", i);
+		   printf("Centroid: (%d,%d), ", bb[i][0], bb[i][1]);
+		   area = bb[i][2]*bb[i][3];
+		   printf("Area: %d ", area);
+		   if (area >200000) printf("Color Error");
+    	   printf(";\n");
+       }
+       printf("\n");
        //Update the bounding box colour
        boundingBoxColour = ((boundingBoxColour + 1) & 0xff);
        IOWR(0x42000, EEE_IMGPROC_BBCOL, (boundingBoxColour << 8) | (0xff - boundingBoxColour));
